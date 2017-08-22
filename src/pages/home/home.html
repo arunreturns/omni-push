@@ -1,17 +1,37 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>Home</ion-title>
+    <ion-title>Message</ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
-  <h2>Welcome to Ionic!</h2>
-  <p>
-    This starter project comes with simple tabs-based layout for apps
-    that are going to primarily use a Tabbed UI.
-  </p>
-  <p>
-    Take a look at the <code>src/pages/</code> directory to add or change tabs,
-    update any existing page or create new pages.
-  </p>
+  <div text-center>
+    <h1>Message</h1>
+  </div>
+
+  <ion-item>
+    <ion-input type="text" placeholder="Enter Message"></ion-input>
+    <button ion-button round item-right (click)="sendMessage()">Send</button>
+    <button ion-button round icon-only item-right (click)="attachFile()">
+      <ion-icon name="attach"></ion-icon>
+    </button>
+  </ion-item>
+
+  <ion-list>
+    <ion-item-sliding *ngFor="let MsgKey of MsgKeys">
+      <ion-item>
+        <h2>{{ UserMsgs[MsgKey].Message }}</h2>
+        <h3>{{ UserMsgs[MsgKey].When | date:'yMdjm' }}</h3>
+        <p>{{ UserMsgs[MsgKey].Source }}</p>
+      </ion-item>
+      <ion-item-options side="right">
+        <button ion-button color="danger" (click)="deleteMsg(MsgKey)">
+          <ion-icon name="trash"></ion-icon> Delete
+        </button>
+        <button ion-button color="secondary">
+          <ion-icon name="copy"></ion-icon> Copy
+        </button>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
 </ion-content>

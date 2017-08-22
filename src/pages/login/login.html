@@ -1,0 +1,38 @@
+<ion-content padding align-items-center justify-content-center>
+  <form [formGroup]="LoginForm" (ngSubmit)="ExistingUser ? login() : signup()">
+    <div text-center>
+      <h1>Omni Push</h1>
+    </div>
+
+    <ion-card>
+      <ion-input type="email" formControlName="Email" placeholder="Enter the Email Id" required>
+      </ion-input>
+    </ion-card>
+
+    <ion-card>
+      <ion-input type="password" formControlName="Password" placeholder="Enter the password" required>
+      </ion-input>
+    </ion-card>
+
+    <div padding>
+      <button type="submit" ion-button block color="{{ExistingUser ? 'default' : 'secondary'}}">
+        {{ ExistingUser ? 'Sign In' : 'Sign Up'}}
+      </button>
+    </div>
+
+    <div text-center center>
+      <ion-label ion-button clear (click)="ExistingUser = !ExistingUser">
+        Already have an account?
+      </ion-label>
+    </div>
+
+    <div text-center center>
+      <ion-label ion-button clear>Forgot Password?</ion-label>
+    </div>
+
+    <div class="error-msg" padding text-center center>
+      <label>{{ErrorMsg}}</label>
+    </div>
+  </form>
+
+</ion-content>

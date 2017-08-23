@@ -1,7 +1,7 @@
 import { NavParams } from 'ionic-angular';
 import { Component } from '@angular/core';
 
-import { AboutPage } from '../about/about';
+import { SettingsPage } from '../settings/settings';
 import { ProfilePage } from '../profile/profile';
 import { HomePage } from '../home/home';
 
@@ -11,7 +11,7 @@ import { HomePage } from '../home/home';
 export class TabsPage {
   params: NavParams;
   tab1Root = HomePage;
-  tab2Root = AboutPage;
+  tab2Root = SettingsPage;
   tab3Root = ProfilePage;
 
   constructor(public navParams: NavParams) {

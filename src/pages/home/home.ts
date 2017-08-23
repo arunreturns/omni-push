@@ -2,6 +2,7 @@ import { Device } from '@ionic-native/device';
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { FirebaseService } from './../../services/FirebaseService';
+import { MessagingService } from './../../services/MessagingService';
 import { NotificationService } from './../../services/NotificationService';
 
 @Component({
@@ -16,7 +17,9 @@ export class HomePage {
   UserMsg: any;
   constructor(public navCtrl: NavController, public params: NavParams, 
               public device: Device, public firebaseService: FirebaseService,
-              public notificationService: NotificationService) {
+              public notificationService: NotificationService,
+              public messagingService: MessagingService) {
+    messagingService.startOnMsg();
     this.FirebaseDB = firebaseService.firebaseDatabase;
     this.UID = params.data.uid
     let Self = this;

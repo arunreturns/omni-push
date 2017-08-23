@@ -21,7 +21,39 @@
         .then(() => console.log('service worker installed'))
         .catch(err => console.error('Error', err));
     }
-  </script>-->
+  </script> -->
+  <script src="https://www.gstatic.com/firebasejs/4.2.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/4.2.0/firebase-messaging.js"></script>
+  <script>
+    var APIKEY="AIzaSyA_mXCxfn0yyQGTqYkefbx1R49wtgIxTH8";
+    var AUTHDOMAIN="omnipush-64782.firebaseapp.com";
+    var DATABASEURL="https://omnipush-64782.firebaseio.com";
+    var PROJECTID="omnipush-64782";
+    var STORAGEBUCKET="omnipush-64782.appspot.com";
+    var SENDERID="462635805345";
+    
+    var apiKey = APIKEY;
+    var authDomain = AUTHDOMAIN;
+    var databaseURL = DATABASEURL;
+    var projectId = PROJECTID;
+    var storageBucket = STORAGEBUCKET;
+    var messagingSenderId = SENDERID;
+    
+    var config = {
+        apiKey, authDomain, databaseURL,
+        projectId, storageBucket,
+        messagingSenderId
+    };
+    
+    firebase.initializeApp(config);
+    // Retrieve an instance of Firebase Messaging so that it can handle background
+    // messages.
+    const messaging = firebase.messaging();
+    console.log("Messaging", messaging);
+    messaging.onMessage = function(payload) {
+      console.log("Message received. ", payload);
+    };
+  </script>
 
   <link href="build/main.css" rel="stylesheet">
 

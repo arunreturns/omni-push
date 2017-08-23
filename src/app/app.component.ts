@@ -18,12 +18,6 @@ export class MyApp {
       // Here you can do any higher level native things you might need.
       statusBar.styleDefault();
       splashScreen.hide();
-      console.log("*** DEVICE ***")
-      console.log(this.device)
-      console.log(this.device.manufacturer)
-      console.log(this.device.model)
-      console.log(this.device.platform)
-      console.log("*** DEVICE ***")
     });
   }
 }

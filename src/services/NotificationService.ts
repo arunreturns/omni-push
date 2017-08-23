@@ -50,8 +50,8 @@ export class NotificationService {
   showMobileNotification(notification) {
     this.localNotifications.schedule({
       id: 1,
-      text: notification.text,
-      data: notification.data
+      title: notification.title,
+      text: notification.body
     });
   }
 }

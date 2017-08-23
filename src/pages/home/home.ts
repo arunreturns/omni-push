@@ -1,8 +1,8 @@
 import { Device } from '@ionic-native/device';
-import { Component, Pipe, PipeTransform } from '@angular/core';
+import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
-import firebaseInst from '../../utils/firebaseUtil';
-import { LocalNotifications } from '@ionic-native/local-notifications';
+import { FirebaseService } from './../../services/FirebaseService';
+import { NotificationService } from './../../services/NotificationService';
 
 @Component({
   selector: 'page-home',
@@ -11,17 +11,37 @@ import { LocalNotifications } from '@ionic-native/local-notifications';
 export class HomePage {
   UserMsgs: any[];
   MsgKeys: any[];
-
-  constructor(public navCtrl: NavController, public params: NavParams, public device: Device, private localNotifications: LocalNotifications) {
-    console.log("HOMEPAGE", params)
-    let UID = params.data.uid
+  UID: any;
+  FirebaseDB: any;
+  UserMsg: any;
+  constructor(public navCtrl: NavController, public params: NavParams, 
+              public device: Device, public firebaseService: FirebaseService,
+              public notificationService: NotificationService) {
+    this.FirebaseDB = firebaseService.firebaseDatabase;
+    this.UID = params.data.uid
     let Self = this;
-    let UserMsgsRef = firebaseInst.database().ref('/' + UID)
+    let UserMsgsRef = this.FirebaseDB.ref('/' + this.UID)
     UserMsgsRef.on('value', function (snapshot) {
       let UserMsgs = snapshot.val()
       console.log("[USERMSGS]", UserMsgs)
       Self.UserMsgs = UserMsgs;
       Self.MsgKeys = Object.keys(UserMsgs)
+    })
+
+    UserMsgsRef.on('child_added', function (snapshot) {
+      var message = snapshot.val()
+      // let userAgent = getUserAgent()
+      let currentTime: any = new Date()
+      let messageTime: any = new Date(message.When)
+      let secondsDiff = (currentTime - messageTime) / 1000
+      if (secondsDiff < 10) {
+        console.log('New Popup', message)
+        let Notification = {
+          title: message.Source,
+          body: message.Message
+        }
+        Self.notificationService.showNotification(Notification)
+      }
     })
   }
 
@@ -29,27 +49,22 @@ export class HomePage {
     console.log(this.device.manufacturer)
     console.log(this.device.model)
     console.log(this.device.platform)
+    let Source = "Web"
+    let MessageData = {
+      Message: this.UserMsg,
+      When: (new Date()).toString(),
+      Source
+    }
+    // console.log(MessageData)
+    this.FirebaseDB.ref('/' + this.UID).push(MessageData)
   }
 
   attachFile() {
-    this.localNotifications.schedule({
-      id: 1,
-      text: 'Single ILocalNotification',
-      data: { secret: "AS" }
-    });
   }
 
   deleteMsg(MsgKey) {
-    let UID = this.params.data.uid
-    firebaseInst.database().ref('/' + UID + '/' + MsgKey).remove(function () {
+    this.FirebaseDB.ref('/' + this.UID + '/' + MsgKey).remove(function () {
       console.log('Removed')
     })
   }
-}
-
-@Pipe({ name: 'FormattedDate',  pure: false })
-export class FormattedDate implements PipeTransform {
-    transform(value: any, args: any[] = null): any {
-        return value.slice(0, 24)
-    }
 }

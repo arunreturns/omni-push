@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 
-import firebaseInst from '../../utils/firebaseUtil'
+import { FirebaseService } from './../../services/FirebaseService';
 
 import { TabsPage } from '../tabs/tabs';
 
@@ -18,14 +18,16 @@ export class LoginPage implements OnInit {
   LoginForm : FormGroup;
   ErrorMsg : string = "Error Message";
   ExistingUser: boolean;
-
-  constructor(public navCtrl: NavController, private formBuilder: FormBuilder) {
+  FirebaseAuth: any;
+  constructor(public navCtrl: NavController, private formBuilder: FormBuilder,
+              public firebaseService: FirebaseService) {
     this.LoginForm = this.formBuilder.group({
       Email: ['', Validators.required],
       Password: ['', Validators.required]
     });
+    this.FirebaseAuth = firebaseService.firebaseAuth;
     let Self = this;
-    firebaseInst.auth().onAuthStateChanged(function (user) {
+    this.FirebaseAuth.onAuthStateChanged(function (user) {
       if (user) {
         console.log('[Logged In]', user)
         Self.navCtrl.push(TabsPage, {
@@ -38,7 +40,7 @@ export class LoginPage implements OnInit {
   login(){
     let Self = this;
     let { Email, Password } = this.LoginForm.value;
-    firebaseInst.auth().signInWithEmailAndPassword(Email, Password).then(function(user){
+    this.FirebaseAuth.signInWithEmailAndPassword(Email, Password).then(function(user){
       if ( user ) {
         console.log(user);
       }
@@ -51,7 +53,7 @@ export class LoginPage implements OnInit {
   signup(){
     let Self = this;
     let { Email, Password } = this.LoginForm.value;
-    firebaseInst.auth().createUserWithEmailAndPassword(Email, Password).then(function(user){
+    this.FirebaseAuth.createUserWithEmailAndPassword(Email, Password).then(function(user){
       if ( user ) {
         console.log(user);
       }

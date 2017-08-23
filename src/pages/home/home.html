@@ -10,7 +10,7 @@
   </div>
 
   <ion-item>
-    <ion-input type="text" placeholder="Enter Message"></ion-input>
+    <ion-input type="text" [(ngModel)]="UserMsg" placeholder="Enter Message"></ion-input>
     <button ion-button round item-right (click)="sendMessage()">Send</button>
     <button ion-button round icon-only item-right (click)="attachFile()">
       <ion-icon name="attach"></ion-icon>

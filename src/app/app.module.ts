@@ -14,6 +14,9 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { Device } from '@ionic-native/device';
 import { LocalNotifications } from '@ionic-native/local-notifications';
 
+import { FirebaseService } from './../services/FirebaseService';
+import { NotificationService } from './../services/NotificationService';
+
 @NgModule({
   declarations: [
     MyApp,
@@ -41,6 +44,8 @@ import { LocalNotifications } from '@ionic-native/local-notifications';
     SplashScreen,
     Device,
     LocalNotifications,
+    NotificationService,
+    FirebaseService,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })

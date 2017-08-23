@@ -1,5 +1,5 @@
-<ion-content padding align-items-center justify-content-center>
-  <form [formGroup]="LoginForm" (ngSubmit)="ExistingUser ? login() : signup()">
+<ion-content padding>
+  <form align-self-center	 [formGroup]="LoginForm" (ngSubmit)="ExistingUser ? login() : signup()">
     <div text-center>
       <h1>Omni Push</h1>
     </div>
@@ -20,14 +20,14 @@
       </button>
     </div>
 
-    <div text-center center>
+    <div text-center center no-padding no-margin>
       <ion-label ion-button clear (click)="ExistingUser = !ExistingUser">
         Already have an account?
       </ion-label>
     </div>
 
-    <div text-center center>
-      <ion-label ion-button clear>Forgot Password?</ion-label>
+    <div text-center center no-padding no-margin>
+      <ion-label ion-button clear (click)="forgotPassword()">Forgot Password?</ion-label>
     </div>
 
     <div class="error-msg" padding text-center center>

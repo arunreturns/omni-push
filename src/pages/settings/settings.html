@@ -1,11 +1,17 @@
 <ion-header>
   <ion-navbar>
     <ion-title>
-      About
+      Settings
     </ion-title>
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
-
+<ion-content padding align-items-center>
+  <ion-list>
+    <ion-item>
+      <ion-icon name="mail" item-start></ion-icon>
+      <ion-label>{{ User.email }}</ion-label>
+    </ion-item>
+  </ion-list>
+  <button ion-button color="danger" block (click)="logout()">Logout</button>
 </ion-content>

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 
@@ -11,13 +11,10 @@ import { TabsPage } from '../tabs/tabs';
   templateUrl: 'login.html'
 })
 
-export class LoginPage implements OnInit {
-  ngOnInit() {
-    
-  }
+export class LoginPage {
   LoginForm : FormGroup;
-  ErrorMsg : string = "Error Message";
-  ExistingUser: boolean;
+  ErrorMsg : string;
+  ExistingUser: boolean = true;
   FirebaseAuth: any;
   constructor(public navCtrl: NavController, private formBuilder: FormBuilder,
               public firebaseService: FirebaseService) {
@@ -26,40 +23,45 @@ export class LoginPage implements OnInit {
       Password: ['', Validators.required]
     });
     this.FirebaseAuth = firebaseService.firebaseAuth;
-    let Self = this;
-    this.FirebaseAuth.onAuthStateChanged(function (user) {
-      if (user) {
-        console.log('[Logged In]', user)
-        Self.navCtrl.push(TabsPage, {
-          uid: user.uid
-        })
-      }
-    })
+    this.FirebaseAuth.onAuthStateChanged(this.authChangeHandler.bind(this))
+  }
+
+  authChangeHandler(user){
+    console.log("[Inside authChangeHandler]")
+    if (user) {
+      console.log('[Logged In]', user)
+      this.navCtrl.push(TabsPage, {
+        uid: user.uid
+      })
+    }
+  }
+
+  handleAuthSuccess(user, mode) {
+    if ( user ) {
+      console.log(mode + ":" + user);
+    }
+  }
+
+  handleAuthError(error, mode){
+    console.log("Error during " + mode + ":", error)
+    this.ErrorMsg = error.message;
   }
 
   login(){
-    let Self = this;
     let { Email, Password } = this.LoginForm.value;
-    this.FirebaseAuth.signInWithEmailAndPassword(Email, Password).then(function(user){
-      if ( user ) {
-        console.log(user);
-      }
-    }).catch(function(error) {
-      console.log(error);
-      Self.ErrorMsg = error.message
-    });
+    this.FirebaseAuth.signInWithEmailAndPassword(Email, Password)
+      .then(this.handleAuthSuccess.bind(this, 'Login'))
+      .catch(this.handleAuthError.bind(this, 'Login'));
   }
 
   signup(){
-    let Self = this;
     let { Email, Password } = this.LoginForm.value;
-    this.FirebaseAuth.createUserWithEmailAndPassword(Email, Password).then(function(user){
-      if ( user ) {
-        console.log(user);
-      }
-    }).catch(function(error) {
-      console.log(error);
-      Self.ErrorMsg = error.message
-    });
+    this.FirebaseAuth.createUserWithEmailAndPassword(Email, Password)
+      .then(this.handleAuthSuccess.bind(this, 'Login'))
+      .catch(this.handleAuthError.bind(this, 'Signup'));
+  }
+
+  forgotPassword(){
+    
   }
 }

@@ -4,10 +4,11 @@ import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { MyApp } from './app.component';
 
 import { SettingsPage } from '../pages/settings/settings';
-import { ProfilePage } from '../pages/profile/profile';
 import { HomePage } from '../pages/home/home';
 import { TabsPage } from '../pages/tabs/tabs';
 import { LoginPage } from '../pages/login/login';
+
+import { HttpModule } from '@angular/http';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -17,26 +18,24 @@ import { LocalNotifications } from '@ionic-native/local-notifications';
 import { FirebaseService } from './../services/FirebaseService';
 import { NotificationService } from './../services/NotificationService';
 import { MessagingService } from './../services/MessagingService';
-import { Push } from '@ionic-native/push'
 
 @NgModule({
   declarations: [
     MyApp,
     SettingsPage,
-    ProfilePage,
     HomePage,
     TabsPage,
     LoginPage
   ],
   imports: [
     BrowserModule,
+    HttpModule,
     IonicModule.forRoot(MyApp)
   ],
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
     SettingsPage,
-    ProfilePage,
     HomePage,
     TabsPage,
     LoginPage
@@ -49,7 +48,6 @@ import { Push } from '@ionic-native/push'
     NotificationService,
     FirebaseService,
     MessagingService,
-    Push,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })

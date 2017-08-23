@@ -1,9 +1,9 @@
 import { Device } from '@ionic-native/device';
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
+
 import { FirebaseService } from './../../services/FirebaseService';
 import { MessagingService } from './../../services/MessagingService';
-import { NotificationService } from './../../services/NotificationService';
 
 @Component({
   selector: 'page-home',
@@ -15,58 +15,42 @@ export class HomePage {
   UID: any;
   FirebaseDB: any;
   UserMsg: any;
+  Ref: any;
   constructor(public navCtrl: NavController, public params: NavParams, 
-              public device: Device, public firebaseService: FirebaseService,
-              public notificationService: NotificationService,
+              public device: Device,
+              public firebaseService: FirebaseService,
               public messagingService: MessagingService) {
-    messagingService.startOnMsg();
     this.FirebaseDB = firebaseService.firebaseDatabase;
     this.UID = params.data.uid
-    let Self = this;
-    let UserMsgsRef = this.FirebaseDB.ref('/' + this.UID)
-    UserMsgsRef.on('value', function (snapshot) {
-      let UserMsgs = snapshot.val()
-      console.log("[USERMSGS]", UserMsgs)
-      Self.UserMsgs = UserMsgs;
-      Self.MsgKeys = Object.keys(UserMsgs)
-    })
+    this.Ref = '/' + this.UID + '/Messages/'
+    let UserMsgsRef = this.FirebaseDB.ref(this.Ref)
+    UserMsgsRef.on('value', this.handleMsgs.bind(this))
+  }
 
-    UserMsgsRef.on('child_added', function (snapshot) {
-      var message = snapshot.val()
-      // let userAgent = getUserAgent()
-      let currentTime: any = new Date()
-      let messageTime: any = new Date(message.When)
-      let secondsDiff = (currentTime - messageTime) / 1000
-      if (secondsDiff < 10) {
-        console.log('New Popup', message)
-        let Notification = {
-          title: message.Source,
-          body: message.Message
-        }
-        Self.notificationService.showNotification(Notification)
-      }
-    })
+  handleMsgs(Snapshot) {
+    let UserMsgs = Snapshot.val()
+    console.log("[USERMSGS]", UserMsgs)
+    this.UserMsgs = UserMsgs;
+    this.MsgKeys = UserMsgs && typeof UserMsgs !== 'undefined' ? Object.keys(UserMsgs) : []
   }
 
   sendMessage() {
-    console.log(this.device.manufacturer)
-    console.log(this.device.model)
-    console.log(this.device.platform)
-    let Source = "Web"
+    let { model } = this.device
     let MessageData = {
       Message: this.UserMsg,
       When: (new Date()).toString(),
-      Source
+      Source: typeof (model) !== 'undefined' ? model : 'Browser'
     }
-    // console.log(MessageData)
-    this.FirebaseDB.ref('/' + this.UID).push(MessageData)
+    console.log(MessageData)
+    this.FirebaseDB.ref(this.Ref).push(MessageData)
+    // this.firebaseService.sendPushMessage(MessageData)
   }
 
   attachFile() {
   }
 
   deleteMsg(MsgKey) {
-    this.FirebaseDB.ref('/' + this.UID + '/' + MsgKey).remove(function () {
+    this.FirebaseDB.ref(this.Ref + MsgKey).remove(function () {
       console.log('Removed')
     })
   }

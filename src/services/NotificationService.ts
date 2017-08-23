@@ -25,7 +25,7 @@ export class NotificationService {
     })
 
     function onNotifyShow () {
-      console.log('notification was shown!')
+      console.log('Notification was shown!')
     }
     console.log(myNotification)
     myNotification.show()

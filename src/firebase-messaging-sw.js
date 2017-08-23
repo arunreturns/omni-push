@@ -1,22 +1,15 @@
 // Import and configure the Firebase SDK
 // These scripts are made available when the app is served or deployed on Firebase Hosting
 // If you do not serve/host your project using Firebase Hosting see https://firebase.google.com/docs/web/setup
-importScripts('../node_modules/firebase/firebase-app.js');
-importScripts('../node_modules/firebase/firebase-messaging.js');
+importScripts('https://www.gstatic.com/firebasejs/4.2.0/firebase-app.js');
+importScripts('https://www.gstatic.com/firebasejs/4.2.0/firebase-messaging.js');
 
-var APIKEY="AIzaSyA_mXCxfn0yyQGTqYkefbx1R49wtgIxTH8"
-var AUTHDOMAIN="omnipush-64782.firebaseapp.com"
-var DATABASEURL="https://omnipush-64782.firebaseio.com"
-var PROJECTID="omnipush-64782"
-var STORAGEBUCKET="omnipush-64782.appspot.com"
-var SENDERID="462635805345"
-
-var apiKey = APIKEY;
-var authDomain = AUTHDOMAIN;
-var databaseURL = DATABASEURL;
-var projectId = PROJECTID;
-var storageBucket = STORAGEBUCKET;
-var messagingSenderId = SENDERID;
+const apiKey = "AIzaSyA_mXCxfn0yyQGTqYkefbx1R49wtgIxTH8";
+const authDomain = "omnipush-64782.firebaseapp.com"
+const databaseURL = "https://omnipush-64782.firebaseio.com";
+const projectId = "omnipush-64782";
+const storageBucket = "omnipush-64782.appspot.com";
+const messagingSenderId = "462635805345";
 
 var config = {
     apiKey, authDomain, databaseURL,

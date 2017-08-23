@@ -1,49 +1,55 @@
 import { Injectable } from '@angular/core';
+import { Device } from '@ionic-native/device';
+
 import { FirebaseService } from './FirebaseService'
+import { NotificationService } from './NotificationService';
 
 @Injectable()
 export class MessagingService {
   messaging: any;
-
-  constructor(public firebaseService: FirebaseService){
+  Ref: any;
+  constructor(public firebaseService: FirebaseService, public notificationService: NotificationService,
+              public device: Device){
     this.messaging = firebaseService.firebaseMessaging;
-    console.log("[MessagingService] Going to Request Permission")
-    let self = this;
-    
-    this.messaging.requestPermission()
-      .then(function() {
-        console.log('Notification permission granted.');
-        self.messaging.getToken()
-        .then(function(currentToken) {
-          if (currentToken) {
-            console.log("Current Token is", currentToken)
-          } else {
-            console.log('No Instance ID token available. Request permission to generate one.');
-          }
-        })
-        .catch(function(err) {
-          console.log('An error occurred while retrieving token. ', err);
-        });
-      })
-      .catch(function(err) {
-        console.log('Unable to get permission to notify.', err);
-      });
-      
-    this.messaging.onTokenRefresh(function() {
-      self.messaging.getToken()
-      .then(function(refreshedToken) {
-        console.log('Token refreshed.', refreshedToken);
-      })
-      .catch(function(err) {
-        console.log('Unable to retrieve refreshed token ', err);
-      });
-    });
 
+    this.messaging.requestPermission()
+      .then(this.getToken.bind(this, 'New'))
+      .catch(this.handleTokenError);
+      
+    this.messaging.onTokenRefresh(this.getToken.bind(this, 'Refresh'));
+
+    this.messaging.onMessage(function(payload){
+      console.log("Message Received", payload);
+      notificationService.showNotification(payload.notification)
+    })
+    let User = firebaseService.firebaseAuth.currentUser;
+    this.Ref = '/' + User.uid + '/Devices/'
   }
-  startOnMsg (){
-    console.log("Initialize Message", this.messaging)
-    this.messaging.onMessage(function(payload) {
-      console.log("Message received. ", payload);
-    });
+
+  getToken(Mode) {
+    console.log("[getToken]")
+    this.messaging.getToken()
+      .then(this.handleToken.bind(this, Mode))
+      .catch(this.handleTokenError);
+  }
+  saveToken(token, Mode){
+    let { model } = this.device
+    let Source = typeof (model) !== 'undefined' && model !== null ? model : 'Browser'
+    let FirebaseDB = this.firebaseService.firebaseDatabase;
+
+    FirebaseDB.ref(this.Ref + Source).push(token)
+  }
+  handleToken(token, Mode){
+    console.log("Inside handleToken")
+    if (token) {
+      console.log("Token is", token)
+      this.saveToken(token, Mode)
+    } else {
+      console.log('No Instance ID token available. Request permission to generate one.');
+    }
+  }
+  
+  handleTokenError(err) {
+    console.log('Unable to retrieve token ', err);
   }
 }

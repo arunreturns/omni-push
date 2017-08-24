@@ -16,6 +16,7 @@ export class LoginPage {
   ErrorMsg : string;
   ExistingUser: boolean = true;
   FirebaseAuth: any;
+  FirebaseDB: any;
   constructor(public navCtrl: NavController, private formBuilder: FormBuilder,
               public firebaseService: FirebaseService) {
     this.LoginForm = this.formBuilder.group({
@@ -23,6 +24,7 @@ export class LoginPage {
       Password: ['', Validators.required]
     });
     this.FirebaseAuth = firebaseService.firebaseAuth;
+    this.FirebaseDB = firebaseService.firebaseDatabase;
     this.FirebaseAuth.onAuthStateChanged(this.authChangeHandler.bind(this))
   }
 
@@ -34,15 +36,17 @@ export class LoginPage {
         uid: user.uid
       })
     }
+    this.firebaseService.User = user;
   }
 
-  handleAuthSuccess(user, mode) {
+  handleAuthSuccess(mode, user) {
     if ( user ) {
       console.log(mode + ":" + user);
+      this.FirebaseDB.ref("/" + user.uid).push({})
     }
   }
 
-  handleAuthError(error, mode){
+  handleAuthError(mode, error){
     console.log("Error during " + mode + ":", error)
     this.ErrorMsg = error.message;
   }

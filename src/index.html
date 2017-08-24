@@ -14,11 +14,48 @@
   <!-- cordova.js required for cordova apps -->
   <script src="cordova.js"></script>
 
+  <script src='https://www.gstatic.com/firebasejs/4.2.0/firebase-app.js'></script>
+  <script src='https://www.gstatic.com/firebasejs/4.2.0/firebase-messaging.js'></script>
+  <script>
+    const apiKey = "AIzaSyA_mXCxfn0yyQGTqYkefbx1R49wtgIxTH8";
+    const authDomain = "omnipush-64782.firebaseapp.com"
+    const databaseURL = "https://omnipush-64782.firebaseio.com";
+    const projectId = "omnipush-64782";
+    const storageBucket = "omnipush-64782.appspot.com";
+    const messagingSenderId = "462635805345";
+    
+    var config = {
+        apiKey, authDomain, databaseURL,
+        projectId, storageBucket,
+        messagingSenderId
+    };
+    
+    firebase.initializeApp(config);
+    console.log("Initialized App")
+    
+    const messaging = firebase.messaging();
+    
+    messaging.onMessage(function(payload) {
+      console.log('[index.html] Received onMessage message ', payload);
+      // Customize notification here
+      const notificationTitle = 'Background Message Title';
+      const notificationOptions = {
+        body: 'Background Message body.',
+        icon: '/firebase-logo.png',
+        click_action: "https://ionicapp-arunreturns.c9users.io/"
+      };
+    
+      return self.registration.showNotification(notificationTitle,
+          notificationOptions);
+    });
+  </script>
   <!-- un-comment this code to enable service worker
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('service-worker.js')
-        .then(() => console.log('service worker installed'))
+        .then((serviceWorkerRegistration) => {
+          console.log('Service worker Installed');
+        })
         .catch(err => console.error('Error', err));
     }
   </script> -->

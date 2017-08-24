@@ -5,30 +5,26 @@
 </ion-header>
 
 <ion-content padding center>
-  <div text-center>
-    <h1>Message</h1>
-  </div>
-
-  <ion-item>
-    <ion-label floating>Enter Message</ion-label>
-    <ion-input type="text" [(ngModel)]="UserMsg"></ion-input>
-  </ion-item>
+  <form align-self-center	[formGroup]="MessageForm" (ngSubmit)="sendMessage()">
+    <div text-center>
+      <h1>Message</h1>
+    </div>
   
-  <ion-item>
-    <ion-label>Device</ion-label>
-    <ion-select [(ngModel)]="gaming" padding>
-      <ion-option value="nes">NES</ion-option>
-      <ion-option value="n64">Nintendo64</ion-option>
-      <ion-option value="ps">PlayStation</ion-option>
-      <ion-option value="genesis">Sega Genesis</ion-option>
-      <ion-option value="saturn">Sega Saturn</ion-option>
-      <ion-option value="snes">SNES</ion-option>
-    </ion-select>
-  </ion-item>
-
-  <div center text-center padding>
-    <button ion-button round item-right (click)="sendMessage()">Send</button>
-  </div>
+    <ion-item>
+      <ion-label floating>Enter Message</ion-label>
+      <ion-input type="text" formControlName="Message"></ion-input>
+    </ion-item>
+    
+    <ion-item>
+      <ion-label>Device</ion-label>
+      <ion-select formControlName="DeviceToken" padding>
+        <ion-option *ngFor="let DeviceKey of DeviceKeys" value="{{Devices[DeviceKey]}}">{{DeviceKey}}</ion-option>
+      </ion-select>
+    </ion-item>
+    <div center text-center padding>
+      <button ion-button round [disabled]="!MessageForm.valid">Send</button>
+    </div>
+  </form>
   <ion-list>
     <ion-item-sliding *ngFor="let MsgKey of MsgKeys">
       <ion-item>

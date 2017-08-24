@@ -8,6 +8,8 @@ import { NotificationService } from './NotificationService';
 export class MessagingService {
   messaging: any;
   Ref: any;
+  Token: any;
+  Mode: any;
   constructor(public firebaseService: FirebaseService, public notificationService: NotificationService,
               public device: Device){
     this.messaging = firebaseService.firebaseMessaging;
@@ -27,23 +29,25 @@ export class MessagingService {
   }
 
   getToken(Mode) {
-    console.log("[getToken]")
+    console.log("[getToken] Mode", Mode)
+    this.Mode = Mode;
     this.messaging.getToken()
-      .then(this.handleToken.bind(this, Mode))
+      .then(this.handleToken.bind(this))
       .catch(this.handleTokenError);
   }
-  saveToken(token, Mode){
+  saveToken(token){
+    console.log("Saving Token for Mode: " + this.Mode);
     let { model } = this.device
     let Source = typeof (model) !== 'undefined' && model !== null ? model : 'Browser'
     let FirebaseDB = this.firebaseService.firebaseDatabase;
 
-    FirebaseDB.ref(this.Ref + Source).push(token)
+    FirebaseDB.ref(this.Ref + Source).set(token)
   }
-  handleToken(token, Mode){
-    console.log("Inside handleToken")
+  handleToken(token){
+    console.log("Inside handleToken", token)
     if (token) {
-      console.log("Token is", token)
-      this.saveToken(token, Mode)
+      this.Token = token;
+      this.saveToken(token)
     } else {
       console.log('No Instance ID token available. Request permission to generate one.');
     }
